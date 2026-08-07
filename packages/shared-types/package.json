@@ -1,0 +1,12 @@
+{
+  "name": "@confer/shared-types",
+  "version": "1.0.0",
+  "description": "Shared TypeScript interfaces for confer client and server",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

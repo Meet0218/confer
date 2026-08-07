@@ -1,0 +1,18 @@
+{
+  "name": "confer-root",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w client\" \"npm run dev -w server\" \"npm run dev:ai\"",
+    "dev:ai": "cd ai-service && python -m uvicorn main:app --reload --port 8000",
+    "install:all": "npm install && cd ai-service && pip install -r requirements.txt",
+    "migrate": "npm run migrate -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
