@@ -1,24 +1,26 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const url = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/confer';
+const url =
+  process.env.DATABASE_URL ||
+  "postgres://postgres:postgres@localhost:5432/confer";
 
 module.exports = {
   development: {
     url,
-    dialect: 'postgres',
+    dialect: "postgres",
   },
   test: {
     url,
-    dialect: 'postgres',
+    dialect: "postgres",
   },
   production: {
     url,
-    dialect: 'postgres',
+    dialect: "postgres",
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false
-      }
-    }
-  }
+        rejectUnauthorized: false,
+      },
+    },
+  },
 };

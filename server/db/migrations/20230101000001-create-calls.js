@@ -1,57 +1,56 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('calls', {
+    await queryInterface.createTable("calls", {
       id: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        type: Sequelize.BIGINT,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
-      roomName: {
+      room_name: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
       },
-      hostId: {
-        type: Sequelize.UUID,
+      host_id: {
+        type: Sequelize.BIGINT,
         allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+      },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       status: {
-        type: Sequelize.STRING,
+        type: Sequelize.ENUM("SCHEDULED", "ONGOING", "ENDED", "CANCELLED"),
         allowNull: false,
-        defaultValue: 'active'
+        defaultValue: "SCHEDULED",
       },
-      startedAt: {
+      started_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      ended_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn('now')
+        defaultValue: Sequelize.fn("now"),
       },
-      endedAt: {
-        type: Sequelize.DATE,
-        allowNull: true
-      },
-      createdAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn('now')
+        defaultValue: Sequelize.fn("now"),
       },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.fn('now')
-      }
     });
+
+    await queryInterface.addIndex("calls", ["host_id"]);
+    await queryInterface.addIndex("calls", ["status"]);
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('calls');
-  }
+    await queryInterface.dropTable("calls");
+  },
 };

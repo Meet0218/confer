@@ -6,7 +6,7 @@ export interface Point {
 export interface DrawingEvent {
   roomId: string;
   userId: string;
-  type: 'start' | 'move' | 'end';
+  type: "start" | "move" | "end";
   point: Point;
   color: string;
   width: number;
@@ -15,7 +15,7 @@ export interface DrawingEvent {
 export interface CallEvent {
   roomId: string;
   userId: string;
-  action: 'joined' | 'left';
+  action: "joined" | "left";
   timestamp: string;
 }
 

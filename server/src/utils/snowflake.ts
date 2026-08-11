@@ -21,7 +21,10 @@ export class Snowflake {
 
     this.lastTimestamp = timestamp;
 
-    const id = ((timestamp - this.epoch) << 22n) | (this.machineId << 12n) | this.sequence;
+    const id =
+      ((timestamp - this.epoch) << 22n) |
+      (this.machineId << 12n) |
+      this.sequence;
     return id.toString();
   }
 }

@@ -1,57 +1,55 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('call_participants', {
+    await queryInterface.createTable("call_participants", {
       id: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        type: Sequelize.BIGINT,
         primaryKey: true,
-        allowNull: false
-      },
-      callId: {
-        type: Sequelize.UUID,
         allowNull: false,
-        references: {
-          model: 'calls',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
       },
-      userId: {
-        type: Sequelize.UUID,
+      call_id: {
+        type: Sequelize.BIGINT,
         allowNull: false,
-        references: {
-          model: 'users',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
       },
-      joinedAt: {
+      user_id: {
+        type: Sequelize.BIGINT,
+        allowNull: false,
+      },
+      role: {
+        type: Sequelize.ENUM("HOST", "PARTICIPANT"),
+        allowNull: false,
+        defaultValue: "PARTICIPANT",
+      },
+      joined_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      left_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn('now')
+        defaultValue: Sequelize.fn("now"),
       },
-      leftAt: {
-        type: Sequelize.DATE,
-        allowNull: true
-      },
-      createdAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn('now')
+        defaultValue: Sequelize.fn("now"),
       },
-      updatedAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        defaultValue: Sequelize.fn('now')
-      }
     });
+
+    await queryInterface.addIndex("call_participants", ["call_id", "user_id"], {
+      unique: true,
+      name: "call_participants_call_id_user_id_unique",
+    });
+    await queryInterface.addIndex("call_participants", ["call_id"]);
+    await queryInterface.addIndex("call_participants", ["user_id"]);
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('call_participants');
-  }
+    await queryInterface.dropTable("call_participants");
+  },
 };

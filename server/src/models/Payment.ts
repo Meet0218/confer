@@ -1,16 +1,32 @@
-import { Model, DataTypes, Sequelize, InferAttributes, InferCreationAttributes, CreationOptional, ForeignKey } from 'sequelize';
-import { snowflake } from '../utils/snowflake';
-import { User } from './User';
+import {
+  Model,
+  DataTypes,
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+  ForeignKey,
+} from "sequelize";
+import { snowflake } from "../utils/snowflake";
+import { User } from "./User";
 
-export class Payment extends Model<InferAttributes<Payment>, InferCreationAttributes<Payment>> {
+export enum PaymentStatus {
+  PENDING = "PENDING",
+  SUCCEEDED = "SUCCEEDED",
+  FAILED = "FAILED",
+}
+
+export class Payment extends Model<
+  InferAttributes<Payment>,
+  InferCreationAttributes<Payment>
+> {
   declare id: CreationOptional<string>;
-  declare userId: ForeignKey<User['id']>;
-  declare stripeSessionId: string;
-  declare stripeCustomerId: CreationOptional<string | null>;
+  declare userId: ForeignKey<User["id"]>;
+  declare stripePaymentId: CreationOptional<string | null>;
   declare amount: number;
   declare currency: CreationOptional<string>;
-  declare status: string;
-  declare metadata: CreationOptional<any>;
+  declare status: CreationOptional<PaymentStatus>;
+  declare description: CreationOptional<string | null>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -23,13 +39,16 @@ export function initPayment(sequelize: Sequelize) {
         defaultValue: () => snowflake.generate(),
         primaryKey: true,
       },
-      stripeSessionId: {
-        type: DataTypes.STRING,
+      userId: {
+        type: DataTypes.BIGINT,
         allowNull: false,
+        field: "user_id",
       },
-      stripeCustomerId: {
+      stripePaymentId: {
         type: DataTypes.STRING,
+        unique: true,
         allowNull: true,
+        field: "stripe_payment_id",
       },
       amount: {
         type: DataTypes.INTEGER,
@@ -38,23 +57,31 @@ export function initPayment(sequelize: Sequelize) {
       currency: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: 'usd',
+        defaultValue: "usd",
       },
       status: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM("PENDING", "SUCCEEDED", "FAILED"),
         allowNull: false,
+        defaultValue: PaymentStatus.PENDING,
       },
-      metadata: {
-        type: DataTypes.JSONB,
+      description: {
+        type: DataTypes.STRING,
         allowNull: true,
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      createdAt: {
+        type: DataTypes.DATE,
+        field: "created_at",
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: "updated_at",
+      },
     },
     {
       sequelize,
-      tableName: 'payments',
-    }
+      tableName: "payments",
+      underscored: true,
+    },
   );
   return Payment;
 }

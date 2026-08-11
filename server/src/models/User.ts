@@ -1,11 +1,22 @@
-import { Model, DataTypes, Sequelize, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
-import { snowflake } from '../utils/snowflake';
+import {
+  Model,
+  DataTypes,
+  Sequelize,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
+import { snowflake } from "../utils/snowflake";
 
-export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+export class User extends Model<
+  InferAttributes<User>,
+  InferCreationAttributes<User>
+> {
   declare id: CreationOptional<string>;
+  declare name: string;
   declare email: string;
   declare passwordHash: string;
-  declare name: string;
+  declare avatarUrl: CreationOptional<string | null>;
   declare createdAt: CreationOptional<Date>;
   declare updatedAt: CreationOptional<Date>;
 }
@@ -18,6 +29,10 @@ export function initUser(sequelize: Sequelize) {
         defaultValue: () => snowflake.generate(),
         primaryKey: true,
       },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -26,18 +41,27 @@ export function initUser(sequelize: Sequelize) {
       passwordHash: {
         type: DataTypes.STRING,
         allowNull: false,
+        field: "password_hash",
       },
-      name: {
+      avatarUrl: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+        field: "avatar_url",
       },
-      createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
+      createdAt: {
+        type: DataTypes.DATE,
+        field: "created_at",
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: "updated_at",
+      },
     },
     {
       sequelize,
-      tableName: 'users',
-    }
+      tableName: "users",
+      underscored: true,
+    },
   );
   return User;
 }

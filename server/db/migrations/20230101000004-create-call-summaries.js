@@ -1,55 +1,53 @@
-'use strict';
+"use strict";
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('call_summaries', {
+    await queryInterface.createTable("call_summaries", {
       id: {
-        type: Sequelize.UUID,
-        defaultValue: Sequelize.UUIDV4,
+        type: Sequelize.BIGINT,
         primaryKey: true,
-        allowNull: false
+        allowNull: false,
       },
-      callId: {
-        type: Sequelize.UUID,
+      call_id: {
+        type: Sequelize.BIGINT,
         allowNull: false,
         unique: true,
-        references: {
-          model: 'calls',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
       },
-      transcript: {
+      summary_text: {
         type: Sequelize.TEXT,
-        allowNull: true
+        allowNull: false,
       },
-      keyPoints: {
+      key_points: {
         type: Sequelize.JSONB,
-        allowNull: true
+        allowNull: true,
       },
-      actionItems: {
+      action_items: {
         type: Sequelize.JSONB,
-        allowNull: true
+        allowNull: true,
       },
-      rawResponse: {
-        type: Sequelize.JSONB,
-        allowNull: true
+      generated_by: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
-      createdAt: {
+      generated_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn('now')
+        defaultValue: Sequelize.fn("now"),
       },
-      updatedAt: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false,
-        defaultValue: Sequelize.fn('now')
-      }
+        defaultValue: Sequelize.fn("now"),
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("now"),
+      },
     });
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('call_summaries');
-  }
+    await queryInterface.dropTable("call_summaries");
+  },
 };

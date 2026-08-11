@@ -1,25 +1,34 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
+import { commonResponse } from "../utils/commonResponse";
 
-const JWT_SECRET = process.env.JWT_SECRET || 'dev_secret';
+const JWT_SECRET = process.env.JWT_SECRET || "dev_secret";
 
 export interface AuthRequest extends Request {
   user?: { id: string; email: string };
 }
 
-export function requireAuth(req: AuthRequest, res: Response, next: NextFunction) {
+export function requireAuth(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction,
+) {
   const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Unauthorized' });
+  const token = (req as Request & { cookies?: Record<string, string> })?.cookies
+    ?.token;
+
+  if (!token) {
+    return res.status(401).json(commonResponse(null, "Unauthorized", 401));
   }
 
-  const token = authHeader.split(' ')[1];
-
   try {
-    const payload = jwt.verify(token, JWT_SECRET) as { id: string; email: string };
+    const payload = jwt.verify(token, JWT_SECRET) as {
+      id: string;
+      email: string;
+    };
     req.user = payload;
     next();
   } catch (err) {
-    return res.status(401).json({ error: 'Invalid token' });
+    return res.status(401).json(commonResponse(null, "Invalid token", 401));
   }
 }

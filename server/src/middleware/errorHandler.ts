@@ -1,6 +1,14 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
+import { commonResponse } from "../utils/commonResponse";
 
-export function errorHandler(err: Error, req: Request, res: Response, next: NextFunction) {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal Server Error' });
+export function errorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  console.error("Unhandled error:", err);
+  res
+    .status(500)
+    .json(commonResponse(null, err.message || "Internal Server Error", 500));
 }

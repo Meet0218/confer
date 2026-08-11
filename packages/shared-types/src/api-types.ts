@@ -16,3 +16,9 @@ export interface CallSummary {
   keyPoints: string[];
   actionItems: string[];
 }
+
+export interface CommonResponse<T = any> {
+  response: T;
+  message: string;
+  code: number;
+}
