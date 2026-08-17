@@ -20,16 +20,14 @@ type AuthResponse = {
 };
 
 export const queryKeys = {
-  videoToken: (roomName: string) => ["video-token", roomName] as const,
+  videoToken: (callToken: string) => ["video-token", callToken] as const,
 };
 
 async function parseResponse<T extends object>(
   response: Response,
   fallbackError: string,
 ) {
-  const data = (await response.json().catch(() => null)) as
-    | ApiResult<T>
-    | null;
+  const data = (await response.json().catch(() => null)) as ApiResult<T> | null;
 
   if (!response.ok) {
     const envelope = data as ApiEnvelope<T> | null;
@@ -111,11 +109,44 @@ export async function signupUser({
   return requireApiResponse(data, "Sign up failed");
 }
 
-export async function getVideoToken(roomName: string) {
-  const data = await fetchWithAuth<{ token?: string }>("/video/token", {
+export async function getVideoToken(callToken: string) {
+  const data = await fetchWithAuth<{ token?: string }>(
+    `/video/token/${encodeURIComponent(callToken)}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+  return data?.response?.token || data?.token;
+}
+
+export async function getUsers(search?: string) {
+  const query = search ? `?search=${encodeURIComponent(search)}` : "";
+  const data = await fetchWithAuth<{ users?: unknown[] }>(
+    `/calls/get-users${query}`,
+  );
+  return data?.response || [];
+}
+
+export async function createCall(
+  title: string,
+  recipients?: Array<{ id?: string; email?: string }>,
+) {
+  const data = await fetchWithAuth<{
+    call?: {
+      id?: number;
+      roomName?: string;
+      title?: string | null;
+      token?: string;
+    };
+    token?: string;
+    roomUrl?: string;
+    invites?: unknown[];
+  }>("/calls", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ roomName }),
+    body: JSON.stringify({ title: title || undefined, recipients }),
   });
-  return data?.response?.token || data?.token;
+
+  return data?.response || data;
 }

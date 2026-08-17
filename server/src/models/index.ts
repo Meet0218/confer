@@ -20,6 +20,7 @@ import { initTranscript } from "./Transcript";
 import { initCallSummary } from "./CallSummary";
 import { initSubscription } from "./Subscription";
 import { initPayment } from "./Payment";
+import { initInvitation } from "./Invitation";
 
 export const User = initUser(sequelize);
 export const Call = initCall(sequelize);
@@ -28,6 +29,7 @@ export const Transcript = initTranscript(sequelize);
 export const CallSummary = initCallSummary(sequelize);
 export const Subscription = initSubscription(sequelize);
 export const Payment = initPayment(sequelize);
+export const Invitation = initInvitation(sequelize);
 
 export * from "./User";
 export * from "./Call";
@@ -36,6 +38,7 @@ export * from "./Transcript";
 export * from "./CallSummary";
 export * from "./Subscription";
 export * from "./Payment";
+export * from "./Invitation";
 
 // Setup associations (without creating database foreign key constraints)
 User.hasMany(Call, {
@@ -79,6 +82,17 @@ Call.hasOne(CallSummary, {
   constraints: false,
 });
 CallSummary.belongsTo(Call, { foreignKey: "callId", constraints: false });
+
+// Invitations
+Call.hasMany(Invitation, {
+  foreignKey: "callId",
+  as: "invitations",
+  constraints: false,
+});
+Invitation.belongsTo(Call, { foreignKey: "callId", constraints: false });
+
+User.hasMany(Invitation, { foreignKey: "invitedUserId", constraints: false });
+Invitation.belongsTo(User, { foreignKey: "invitedUserId", constraints: false });
 
 User.hasMany(Subscription, {
   foreignKey: "userId",

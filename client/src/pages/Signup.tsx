@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import Card from "../components/ui/Card";
 import Input from "../components/ui/Input";
@@ -11,14 +11,21 @@ import { showToast } from "../lib/toast";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const dispatch = useAppDispatch();
+  const redirectTo = searchParams.get("redirect");
+  const safeRedirect =
+    redirectTo?.startsWith("/") && !redirectTo.startsWith("//")
+      ? redirectTo
+      : "/home";
+
   const signupMutation = useMutation({
     mutationFn: signupUser,
     onSuccess: (data) => {
       const { user } = data;
       dispatch(setCredentials({ user }));
       showToast("Sign up successful", "success");
-      navigate("/home", { replace: true });
+      navigate(safeRedirect, { replace: true });
     },
     onError: (err: Error) => {
       showToast(err.message || "Sign up failed", "error");
@@ -143,7 +150,11 @@ export default function Signup() {
             <p className="text-center text-sm text-gray-600 dark:text-gray-400">
               Already have an account?{" "}
               <Link
-                to="/login"
+                to={
+                  redirectTo
+                    ? `/login?redirect=${encodeURIComponent(safeRedirect)}`
+                    : "/login"
+                }
                 className="font-semibold text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 transition-colors"
               >
                 Sign in

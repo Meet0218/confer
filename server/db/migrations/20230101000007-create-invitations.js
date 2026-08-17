@@ -2,39 +2,29 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable("calls", {
+    await queryInterface.createTable("invitations", {
       id: {
         type: Sequelize.BIGINT,
         primaryKey: true,
         allowNull: false,
       },
-      room_name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
-      },
-      token: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      host_id: {
+      call_id: {
         type: Sequelize.BIGINT,
         allowNull: false,
       },
-      title: {
+      invited_user_id: {
+        type: Sequelize.BIGINT,
+        allowNull: true,
+      },
+      invited_email: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      status: {
-        type: Sequelize.ENUM("SCHEDULED", "ONGOING", "ENDED", "CANCELLED"),
+      token_hash: {
+        type: Sequelize.STRING,
         allowNull: false,
-        defaultValue: "SCHEDULED",
       },
-      started_at: {
-        type: Sequelize.DATE,
-        allowNull: true,
-      },
-      ended_at: {
+      used_at: {
         type: Sequelize.DATE,
         allowNull: true,
       },
@@ -50,11 +40,11 @@ module.exports = {
       },
     });
 
-    await queryInterface.addIndex("calls", ["host_id"]);
-    await queryInterface.addIndex("calls", ["status"]);
+    await queryInterface.addIndex("invitations", ["call_id"]);
+    await queryInterface.addIndex("invitations", ["invited_user_id"]);
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable("calls");
+    await queryInterface.dropTable("invitations");
   },
 };

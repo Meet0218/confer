@@ -47,13 +47,7 @@ function CalendarIcon() {
   );
 }
 
-function SummaryMetric({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function SummaryMetric({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <p className="text-sm text-slate-500 dark:text-gray-400">{label}</p>

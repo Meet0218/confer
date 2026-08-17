@@ -23,6 +23,7 @@ export class Call extends Model<
 > {
   declare id: CreationOptional<string>;
   declare roomName: string;
+  declare token: string;
   declare hostId: ForeignKey<User["id"]>;
   declare title: CreationOptional<string | null>;
   declare status: CreationOptional<CallStatus>;
@@ -45,6 +46,11 @@ export function initCall(sequelize: Sequelize) {
         allowNull: false,
         unique: true,
         field: "room_name",
+      },
+      token: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
       },
       hostId: {
         type: DataTypes.BIGINT,

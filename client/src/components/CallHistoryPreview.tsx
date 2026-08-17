@@ -47,7 +47,8 @@ export default function CallHistoryPreview({
           No completed calls yet
         </h3>
         <p className="mt-2 max-w-sm text-sm leading-6 text-slate-500 dark:text-gray-400">
-          Start your first call to generate activity, transcripts, and AI-assisted summaries.
+          Start your first call to generate activity, transcripts, and
+          AI-assisted summaries.
         </p>
         <Button
           type="button"

@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { requireAuth } from "../../middleware/auth";
-import * as videoController from "./video.controller";
+import { getToken } from "./controllers/getToken.controller";
 
 export const videoRouter = Router();
 
-videoRouter.post("/token", requireAuth, videoController.getToken);
+videoRouter.post("/token/:token", requireAuth, getToken);
+videoRouter.post("/token", requireAuth, getToken);

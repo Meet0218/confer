@@ -1,8 +1,12 @@
 import { Router } from "express";
 import { requireAuth } from "../../middleware/auth";
-import * as callsController from "./calls.controller";
+import { createCall } from "./controllers/createCall.controller";
+import { getCallSummary } from "./controllers/callSummary.controller";
+import { getUsers } from "./controllers/getUsers.controller";
 
 export const callsRouter = Router();
 
-callsRouter.post("/", requireAuth, callsController.createCall);
-callsRouter.get("/:id/summary", requireAuth, callsController.getCallSummary);
+callsRouter.post("/", requireAuth, createCall);
+callsRouter.get("/:id/summary", requireAuth, getCallSummary);
+
+callsRouter.get("/get-users", requireAuth, getUsers);

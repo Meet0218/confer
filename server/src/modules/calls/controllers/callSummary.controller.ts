@@ -1,25 +1,8 @@
 import { Response } from "express";
-import { AuthRequest } from "../../middleware/auth";
-import { Call, CallSummary } from "../../models/index";
-import { summarizeCall } from "./calls.service";
-import { commonResponse } from "../../utils/commonResponse";
-
-export const createCall = async (req: AuthRequest, res: Response) => {
-  const { roomName } = req.body;
-
-  if (!roomName) {
-    return res
-      .status(400)
-      .json(commonResponse(null, "roomName is required", 400));
-  }
-
-  const call = await Call.create({
-    roomName,
-    hostId: req.user!.id,
-  });
-
-  res.status(201).json(commonResponse(call, "Call created successfully", 201));
-};
+import { AuthRequest } from "../../../middleware/auth";
+import { CallSummary } from "../../../models/index";
+import { summarizeCall } from "../services/summarizeCall.service";
+import { commonResponse } from "../../../utils/commonResponse";
 
 export const getCallSummary = async (req: AuthRequest, res: Response) => {
   const callId = req.params.id;

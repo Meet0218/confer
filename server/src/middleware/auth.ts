@@ -5,7 +5,7 @@ import { commonResponse } from "../utils/commonResponse";
 const JWT_SECRET = process.env.JWT_SECRET || "dev_secret";
 
 export interface AuthRequest extends Request {
-  user?: { id: string; email: string };
+  user?: { id: string; email: string; name?: string };
 }
 
 export function requireAuth(
@@ -13,7 +13,6 @@ export function requireAuth(
   res: Response,
   next: NextFunction,
 ) {
-  const authHeader = req.headers.authorization;
   const token = (req as Request & { cookies?: Record<string, string> })?.cookies
     ?.token;
 
@@ -25,6 +24,7 @@ export function requireAuth(
     const payload = jwt.verify(token, JWT_SECRET) as {
       id: string;
       email: string;
+      name?: string;
     };
     req.user = payload;
     next();
